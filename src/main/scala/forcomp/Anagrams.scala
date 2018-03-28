@@ -101,20 +101,17 @@ object Anagrams {
    *  Note: the resulting value is an occurrence - meaning it is sorted
    *  and has no zero-entries.
    */
-  def subtract(x: Occurrences, y: Occurrences): Occurrences = {
-    if (y.isEmpty)
-      x
-    else {
-      if(x.head._1 == y.head._1) {
-        val dif = x.head._2 - y.head._2
-        if (dif == 0)
-          subtract(x.tail, y.tail)
+  def subtract(x: Occurrences, y: Occurrences): Occurrences = (x, y) match {
+    case (`x`, Nil) => x
+    case ((xc, xn) :: xs, (yc, yn) :: ys) =>
+      if(xc == yc) {
+        if (xn == yn)
+          subtract(xs, ys)
         else
-          (x.head._1, dif) :: subtract(x.tail, y.tail)
+          (xc, xn - yn) :: subtract(xs, ys)
       }
       else
-        x.head :: subtract(x.tail, y)
-    }
+        (xc, xn) :: subtract(xs, y)
   }
 
   /** Returns a list of all anagram sentences of the given sentence.
